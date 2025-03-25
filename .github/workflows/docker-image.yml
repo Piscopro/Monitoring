@@ -6,6 +6,7 @@ on:
       - 'spring-boot-docker/**'
     branches:
       - main
+  workflow_dispatch: # Add this line to enable manual triggering
 
 jobs:
   build:
