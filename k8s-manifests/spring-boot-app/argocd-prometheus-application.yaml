@@ -1,0 +1,59 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kube-prometheus-stack
+  namespace: argocd
+spec:
+  project: default
+  source:
+    chart: kube-prometheus-stack
+    repoURL: https://prometheus-community.github.io/helm-charts
+    targetRevision: 45.1.1  # Use the latest version
+    helm:
+      values: |
+        # Include your values from prometheus-values.yaml here
+        alertmanager:
+          config:
+            global:
+              resolve_timeout: 5m
+            route:
+              receiver: default-receiver
+              group_wait: 5s
+              group_interval: 10s
+              repeat_interval: 1h
+            receivers:
+              - name: "null"
+              - name: default-receiver
+                webhook_configs:
+                  - url: http://alertmanager-webhook:9093/api/v1/alerts
+                    send_resolved: true
+        prometheus:
+          prometheusSpec:
+            additionalScrapeConfigs:
+              - job_name: 'spring-boot-app'
+                kubernetes_sd_configs:
+                  - role: pod
+                relabel_configs:
+                  - source_labels: [__meta_kubernetes_pod_label_app]
+                    action: keep
+                    regex: spring-boot-app
+                  - source_labels: [__address__]
+                    action: replace
+                    regex: ([^:]+)(?::\d+)?
+                    replacement: $1:8080
+                    target_label: __address__
+                  - source_labels: [__meta_kubernetes_namespace]
+                    action: replace
+                    target_label: kubernetes_namespace
+                  - source_labels: [__meta_kubernetes_pod_name]
+                    action: replace
+                    target_label: kubernetes_pod_name
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
