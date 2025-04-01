@@ -1,22 +1,24 @@
-For Docker and Kubernetes assignments, go to [Docker](spring-boot-docker) and [Kubernetes](top-spring-on-kubernetes-main)
-# CI/CD
-
 Name: Trần Vỹ Anh (StudentID: 22024508)
 
 ## Overview
-This section describes how to deploy the Spring Boot application to Kubernetes using GitOps principles with ArgoCD for continuous deployment.
+This project demonstrate how to deploy the Spring Boot application to Kubernetes and implement comprehensive monitoring with Prometheus and Grafana.
 
 ## Key Features
-- Kubernetes manifest-based deployment
-- Continuous Deployment with ArgoCD
-- Automated synchronization between Git repository and Kubernetes cluster
-- Scalable and resilient application architecture
-- Resource management with CPU and memory limits
+- Prometheus for metrics collection
+- Grafana for visualization
+- Alert Manager for notifications
+- Node Exporter for infrastructure metrics
 
 ## Screenshot
-### 1. Github Actions
-![Database](k8s-manifests/img/Actions.png)
-![Database](k8s-manifests/img/dockerhub.png)
+### 1. Prometheus (Port 9090)
+![Database](img/prometheus.png)
 
-### 2. ArgoCD
-![Database](k8s-manifests/img/Argo.png)
+### 2. Grafana (Port 8080)
+![Database](img/grafana.png)
+
+### 3. Alertmanager (Port 9093)
+![Database](img/alert.png)
+#### Alert sent to Webhook
+![Database](img/webhook.png)
+#### Alert sent to Email
+![Database](img/email.png)
